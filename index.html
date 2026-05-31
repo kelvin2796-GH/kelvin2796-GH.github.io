@@ -248,7 +248,7 @@ document.getElementById('surpriseBtn').onclick=surprise;
 document.getElementById('postal').addEventListener('keydown',e=>{if(e.key==='Enter')findNearest();});
 document.getElementById('sortSel').onchange=render;
 const known=FOOD.filter(f=>f.ll).length;
-document.getElementById('foot').innerHTML='<b>How to use:</b> type a postal code to rank by distance, tap the cuisine / area headers to collapse them, or hit Surprise me for a random pick. '+FOOD.length+' food spots, each pinned to a real address. New places posted in the Telegram group are added automatically (only ones with a findable location).'; the rest were saved as reels/photos with no named venue (location TBC). New places posted in the Telegram group are added automatically.';
+document.getElementById('foot').innerHTML='<b>How to use:</b> type a postal code to rank by distance, tap the cuisine / area headers to collapse them, or hit Surprise me for a random pick. '+FOOD.length+' food spots, each pinned to a real address. New places posted in the Telegram group are added automatically (only ones with a findable location).';
 buildChips();setupCollapse();renderNonFood();render();
 </script>
 </body>
