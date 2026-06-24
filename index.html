@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Food & Date Spots</title>
+<style>
+  :root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--teal:#39d2c0;--blue:#58a6ff;--green:#3fb950;--red:#f85149;--gold:#d29922;--pink:#f778ba;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5;padding:0 0 60px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+  header{background:linear-gradient(135deg,#161b22 0%,#1c2a33 60%,#10231f 100%);border-bottom:1px solid var(--border);padding:34px 0 28px;margin-bottom:22px}
+  .badge{display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);border:1px solid var(--teal);border-radius:20px;padding:4px 12px;margin-bottom:14px}
+  h1{font-size:30px;font-weight:700;letter-spacing:-.5px}
+  .sub{color:var(--muted);margin-top:8px;font-size:14px;max-width:680px}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:18px}
+  .searchrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .searchrow label{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);width:100%}
+  input[type=text]{flex:1;min-width:180px;background:#0d1117;border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px 14px;font-size:16px;outline:none}
+  input[type=text]:focus{border-color:var(--teal)}
+  button.go{background:var(--teal);color:#04201d;border:none;border-radius:10px;padding:12px 20px;font-size:15px;font-weight:700;cursor:pointer}
+  button.go:hover{filter:brightness(1.08)}
+  button.clr{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer}
+  button.clr:hover{color:var(--text);border-color:var(--muted)}
+  button.dice{background:linear-gradient(135deg,#39d2c0,#58a6ff);color:#04201d;border:none;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer}
+  button.dice:hover{filter:brightness(1.08)}
+  .status{font-size:13px;color:var(--muted);margin-top:10px;min-height:18px}
+  .status b{color:var(--teal)}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .phead{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none;padding:2px 0}
+  .phead:hover{color:var(--text)}
+  .phead .chev{transition:transform .15s;font-size:10px;color:var(--teal)}
+  .phead.col .chev{transform:rotate(-90deg)}
+  .pbody{margin:8px 0 2px;overflow:hidden}
+  .pbody.collapsed{display:none}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:13px;padding:6px 13px;border-radius:20px;border:1px solid var(--border);background:#0d1117;color:var(--muted);cursor:pointer;user-select:none;transition:.12s}
+  .chip:hover{border-color:var(--muted);color:var(--text)}
+  .chip.on{background:var(--teal);color:#04201d;border-color:var(--teal);font-weight:600}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin:4px 0 14px}
+  .tbright{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .count{font-size:13px;color:var(--muted)}
+  .count b{color:var(--text)}
+  .sortsel{background:#0d1117;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;font-size:13px}
+  .randombox{background:linear-gradient(135deg,#10231f,#161b22);border:1px solid var(--teal);border-radius:14px;padding:16px;margin-bottom:18px}
+  .rb-head{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:var(--teal);margin-bottom:12px;font-weight:700}
+  .rb-actions{display:flex;gap:10px;margin-top:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:15px 16px;display:flex;flex-direction:column;gap:8px;transition:.12s}
+  .item:hover{border-color:#3d4654;transform:translateY(-2px)}
+  .item.hi{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+  .item h3{font-size:16px;font-weight:650;line-height:1.25}
+  .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:11px;padding:3px 9px;border-radius:14px;font-weight:600}
+  .meta{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+  .meta .loc{color:var(--text)}
+  .dist{font-size:13px;font-weight:700;color:var(--teal)}
+  .dist.tbc{color:var(--gold);font-weight:500}
+  .note{font-size:12.5px;color:var(--muted);font-style:italic}
+  .links{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+  .lk{font-size:12px;color:var(--blue);text-decoration:none;border:1px solid var(--border);border-radius:8px;padding:4px 10px}
+  .lk:hover{border-color:var(--blue)}
+  .by{font-size:11px;color:#6e7681;margin-left:auto}
+  .sectiontitle{font-size:13px;text-transform:uppercase;letter-spacing:2px;color:var(--teal);margin:34px 0 14px;border-top:1px solid var(--border);padding-top:22px}
+  .empty{color:var(--muted);font-size:14px;padding:30px;text-align:center}
+  footer{margin-top:40px;font-size:12px;color:#6e7681;border-top:1px solid var(--border);padding-top:18px;line-height:1.6}
+  .t-jp{background:#3b1f2b;color:#f778ba}.t-kr{background:#2a1f3b;color:#bc8cff}.t-it{background:#3b2a1f;color:#f0883e}
+  .t-cafe{background:#1f2f3b;color:#58a6ff}.t-bake{background:#3b341f;color:#d29922}.t-steak{background:#3b1f1f;color:#f85149}
+  .t-cn{background:#1f3b27;color:#3fb950}.t-vn{background:#1f3b38;color:#39d2c0}.t-tw{background:#2f3b1f;color:#bcd92a}
+  .t-in{background:#3b2f1f;color:#e3a008}.t-th{background:#1f3b30;color:#56d364}.t-mx{background:#3b2620;color:#ff9472}
+  .t-local{background:#26313b;color:#79c0ff}.t-fine{background:#2b2b3b;color:#a5a5f5}.t-na{background:#21262d;color:#8b949e}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <span class="badge">Q & K - To-Try List</span>
+  <h1>Our Food & Date Spots</h1>
+  <p class="sub">Categorised by cuisine and area, each spot geocoded to its real address. Type a Singapore postal code to surface what is nearest you, or hit Surprise me.</p>
+</div></header>
+
+<div class="wrap">
+  <div class="panel">
+    <div class="searchrow">
+      <label>Find food near a postal code</label>
+      <input type="text" id="postal" placeholder="e.g. 238801, 469724, 018961" autocomplete="off">
+      <button class="go" id="goBtn">Find nearest</button>
+      <button class="clr" id="clrBtn">Reset</button>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="hint">Powered by Singapore OneMap - looks up your postal code live, then sorts nearest-first.</div>
+  </div>
+
+  <div class="panel">
+    <div class="phead" data-target="typeWrap">Filter by cuisine type <span class="chev">&#9662;</span></div>
+    <div class="pbody" id="typeWrap"><div class="chips" id="typeChips"></div></div>
+    <div class="phead" data-target="areaWrap" style="margin-top:12px">Filter by area <span class="chev">&#9662;</span></div>
+    <div class="pbody" id="areaWrap"><div class="chips" id="areaChips"></div></div>
+    <div class="phead" data-target="recentWrap" style="margin-top:12px">Filter by recently added <span class="chev">&#9662;</span></div>
+    <div class="pbody" id="recentWrap"><div class="chips" id="recentChips"></div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="count" id="count"></div>
+    <div class="tbright">
+      <button class="dice" id="surpriseBtn">&#127922; Surprise me</button>
+      <label style="font-size:12px;color:var(--muted)">Sort</label>
+      <select class="sortsel" id="sortSel">
+        <option value="name">A-Z</option>
+        <option value="dist">Nearest first</option>
+        <option value="type">Cuisine type</option>
+        <option value="area">Area</option>
+        <option value="date">Date saved</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="randombox" id="randomBox" style="display:none"></div>
+  <div class="grid" id="grid"></div>
+  <div class="grid" id="gridNF"></div>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const TYPES={jp:"Japanese",kr:"Korean",it:"Italian / Pizza",cafe:"Cafe & Brunch",bake:"Bakery & Dessert",steak:"Steak & BBQ",cn:"Chinese",vn:"Vietnamese",tw:"Taiwanese",th:"Thai",in:"Indian",mx:"Mexican",local:"Local / Hawker / Seafood",fine:"Fine Dining"};
+const TCLASS={jp:"t-jp",kr:"t-kr",it:"t-it",cafe:"t-cafe",bake:"t-bake",steak:"t-steak",cn:"t-cn",vn:"t-vn",tw:"t-tw",th:"t-th",in:"t-in",mx:"t-mx",local:"t-local",fine:"t-fine"};
+const FOOD = [
+ {"n": "Hikiniku To Come (VivoCity)", "t": "cafe", "d": "(auto-added from Telegram)", "area": "Bukit Batok", "ll": [1.3566, 103.73796], "sub": "443A Bukit Batok West Avenue 8 · S651443", "by": "🪻", "date": "2026-06-20", "links": [["Link", "https://vt.tiktok.com/ZSQvbhJ5y"], ["Map", "https://maps.app.goo.gl/o6qRyzV7coX5zVn78?g_st=ic"]]},
+ {"n": "Aniba", "t": "cafe", "d": "(auto-added from Telegram)", "area": "Bukit Batok", "ll": [1.3566, 103.73796], "sub": "443A Bukit Batok West Avenue 8 · S651443", "by": "🪻", "date": "2026-06-14", "links": [["Map", "https://maps.app.goo.gl/PEFZ2heVRcXy4SWH8?g_st=ic"], ["Link", "https://www.instagram.com/p/DZiADOuEv9j/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ=="]]},
+ {"n": "Frosted by fang", "t": "cafe", "d": "(auto-added from Telegram)", "area": "Bukit Batok", "ll": [1.35332, 103.74021], "sub": "460D Bukit Batok West Avenue 9 · S654460", "by": "🪻", "date": "2026-06-09", "links": [["Map", "https://maps.app.goo.gl/FzeBkfnRc9eUbtZY8?g_st=ic"]]},
+ {"n": "Breakfast Grill", "t": "steak", "d": "(auto-added from Telegram)", "area": "Jurong West", "ll": [1.34676, 103.70417], "sub": "Jurong West Avenue 4 · S642676", "by": "🪻", "date": "2026-06-07", "links": [["Map", "https://maps.app.goo.gl/PJ96LVtSdJUnGBHL6?g_st=ic"], ["Map", "https://maps.app.goo.gl/Fd861ZAy8WyJQTRR9?g_st=ic"]]},
+ {"n": "Meatsmith Telok Ayer", "t": "steak", "d": "(auto-added from Telegram)", "area": "Telok Ayer", "ll": [1.28009, 103.84748], "by": "K", "date": "2026-05-31", "links": [["Map", "https://maps.app.goo.gl/Rw8aCZabFkgnkRLo6"]], "sub": "169 Telok Ayer St · S068620"},
+ {"n": "RIB Soul Food - By The Halal Mixologist", "t": "steak", "d": "Cajun-inspired BBQ ribs & soul food", "area": "Kampong Glam · Jalan Kubor", "by": "K", "date": "2026-05-31", "links": [["Link", "https://maps.app.goo.gl/BKeAqBkPuCxMXYCu8"]], "ll": [1.30405, 103.85943], "sub": "8 Jalan Kubor #01-01"},
+ {"n": "Ingen Kyoto", "t": "jp", "d": "Kyoto-style teahouse · parfaits · 200+ teas (BYO tea)", "area": "Orchard · ION", "ll": [1.30398, 103.83203], "sub": "2 Orchard Turn #B3-15/16, ION Orchard · S238801", "by": "Q", "date": "2023-12-28", "links": [["Article", "https://www.shout.sg/zen-kyoto-style-tea-house-in-ion-orchard-has-aesthetic-parfaits-kakigori-lets-you-bring-your-own-tea/"]]},
+ {"n": "Bloomsbury Bakers", "t": "bake", "d": "Cakes (preorder)", "area": "Boon Keng · Bendemeer", "ll": [1.3193, 103.86405], "sub": "30 Bendemeer Rd", "by": "Q", "date": "2024-01-02", "links": [["Instagram", "https://www.instagram.com/bloomsburybakers"]]},
+ {"n": "Baste", "t": "cafe", "d": "Set lunches", "area": "Ann Siang Hill", "ll": [1.28152, 103.84534], "sub": "23 Ann Siang Hill", "by": "Q", "date": "2024-01-28", "links": [["Instagram", "https://www.instagram.com/eatat.baste"]]},
+ {"n": "Cat Cafe @ Orchard", "t": "cafe", "d": "Cat cafe", "area": "Orchard · Orchard Gateway", "ll": [1.30044, 103.83944], "by": "Q", "date": "2024-02-09", "links": [["Reel", "https://www.instagram.com/reel/C19Ml8dSCgS/"]], "sub": "ME Cafe & Games, 277 Orchard Rd #04-12 · S238858"},
+ {"n": "Dew by Whitegrass", "t": "fine", "d": "Casual offshoot of Michelin-starred Whitegrass", "area": "City Hall · CHIJMES", "ll": [1.2948, 103.85257], "sub": "30 Victoria St, CHIJMES", "by": "Q", "date": "2024-02-17", "links": [["Search", "https://g.co/kgs/DCTSNU4"]]},
+ {"n": "Nomiya Izakaya", "t": "jp", "d": "Izakaya & sake bar", "area": "Chinatown", "ll": [1.28293, 103.84431], "sub": "11 Trengganu St", "by": "Q", "date": "2024-02-18", "links": [["Instagram", "https://www.instagram.com/nomiyasg"]]},
+ {"n": "Bochinche", "t": "steak", "d": "Free-flow steak buffet (Argentine)", "area": "Telok Ayer · Amoy St", "ll": [1.28222, 103.84757], "sub": "115 Amoy St", "by": "Q", "date": "2024-02-19", "links": []},
+ {"n": "Punch Cafe", "t": "cafe", "d": "Tiramisu · brunch", "area": "Clarke Quay · North Canal Rd", "ll": [1.28697, 103.84734], "sub": "32 North Canal Rd", "by": "Q", "date": "2024-03-17", "links": [["Search", "https://g.co/kgs/xKpUdyk"]]},
+ {"n": "Apollo Coffee Bar", "t": "cafe", "d": "Carbonara · Asian-inspired brunch", "area": "Serangoon Gardens", "ll": [1.36347, 103.86542], "sub": "65 Serangoon Garden Way", "by": "Q", "date": "2024-04-10", "links": []},
+ {"n": "The Ushi Club", "t": "jp", "d": "Omakase yakiniku · best yakiniku", "area": "Boat Quay", "ll": [1.28626, 103.84909], "sub": "64 Circular Rd · 6423 9060", "by": "Q", "date": "2024-04-13", "links": [["Search", "https://g.co/kgs/XqhBFff"]]},
+ {"n": "Gyu San", "t": "jp", "d": "Japanese restaurant & izakaya", "area": "Orchard · Forum", "ll": [1.3061, 103.82868], "sub": "583 Orchard Rd #01-28, Forum The Shopping Mall · S238884", "by": "Q", "date": "2024-05-17", "links": [["Map", "https://goo.gl/maps/NYjyz6qNvD1a7pQC6"]]},
+ {"n": "Xiang Xiang Hunan Cuisine", "t": "cn", "d": "Hunan", "area": "Chinatown · Mosque St", "ll": [1.28397, 103.84415], "sub": "8 Mosque St · +65 6908 8121", "by": "Q", "date": "2024-05-19", "links": [["Map", "https://goo.gl/maps/Du3pPkEhfy4oQus27"]]},
+ {"n": "Caffe Pralet", "t": "cafe", "d": "Viral square sourdough donuts", "area": "Tiong Bahru", "ll": [1.28351, 103.83449], "sub": "17 Eng Hoon St · 8318 0698", "by": "Q", "date": "2024-06-05", "links": [["Search", "https://g.co/kgs/Tz4J1Gt"]]},
+ {"n": "The Flour Department", "t": "bake", "d": "Fusion bakes (relocated to Everton Pk)", "area": "Chinatown · Hong Lim", "ll": [1.28439, 103.8461], "sub": "orig. 531 Upper Cross St · +65 8168 0485", "by": "Q", "date": "2024-06-09", "links": [["Map", "https://goo.gl/maps/rrce3hUXk29FChdH6"]]},
+ {"n": "Maru Mochi", "t": "bake", "d": "Japan-famous mochi pancakes", "area": "Bugis", "ll": [1.29911, 103.85541], "sub": "200 Victoria St #B1-12A, Bugis Junction · S188021", "by": "Q", "date": "2024-07-02", "links": [["Map", "https://goo.gl/maps/m9AZrrACAytnX71w9"]]},
+ {"n": "Cenzo", "t": "it", "d": "Australian-Italian · fresh pasta · #faves", "area": "Club St · Chinatown", "ll": [1.2818, 103.84581], "sub": "81 Club St", "by": "Q", "date": "2024-07-07", "links": []},
+ {"n": "Etna Italian Restaurant", "t": "it", "d": "Italian · #faves", "area": "Duxton / Tanjong Pagar", "ll": [1.27834, 103.8434], "sub": "49 Duxton Rd · S089513", "by": "Q", "date": "2024-07-07", "links": [["Map", "https://goo.gl/maps/b35cx6Z4fWQRE7JVA"]]},
+ {"n": "Dan's Steaks – Bar & Grill", "t": "steak", "d": "Steak (book on danssteaks.com)", "area": "Serangoon Gardens", "ll": [1.36493, 103.86576], "by": "Q", "date": "2024-07-08", "links": [["TikTok", "https://vt.tiktok.com/ZSY4XUtwx/"]], "sub": "12 Maju Ave · S556690"},
+ {"n": "Huevos", "t": "mx", "d": "Mexican · eggs / brunch", "area": "River Valley · New Bahru", "ll": [1.29219, 103.83929], "sub": "New Bahru #01-16, 46 Kim Yam Rd", "by": "Q", "date": "2024-07-11", "links": [["Map", "https://goo.gl/maps/quMZhsYbuMTDwNmf6"]]},
+ {"n": "Um Yong Baek", "t": "kr", "d": "Korean aged-pork BBQ & gukbap", "area": "Telok Ayer · Boon Tat St", "ll": [1.28129, 103.84866], "sub": "27 Boon Tat St · +65 8843 5968", "by": "Q", "date": "2024-07-12", "links": [["Map", "https://goo.gl/maps/vVWPY44zam23CmZs6"]]},
+ {"n": "Goldenroy Sourdough Pizza", "t": "it", "d": "Halal sourdough pizza", "area": "Jalan Besar · Desker Rd", "ll": [1.30826, 103.85661], "sub": "125 Desker Rd · +65 3129 4321", "by": "Q", "date": "2024-07-15", "links": [["Map", "https://goo.gl/maps/RXtcgHyvo9z6DMHdA"]]},
+ {"n": "Chirashizushi Shou", "t": "jp", "d": "Truffle chirashi bowls", "area": "Bukit Timah", "ll": [1.33876, 103.7786], "sub": "1 Jalan Anak Bukit #B1-55A, Bukit Timah Plaza · S588996", "by": "Q", "date": "2024-07-15", "links": [["Map", "https://goo.gl/maps/uef6YQjRs5RvMgZG6"]]},
+ {"n": "Moonchild", "t": "cafe", "d": "Brunch & coffee (by Atlas/Columbus team)", "area": "Jalan Besar", "ll": [1.31239, 103.85937], "sub": "351 Jalan Besar #01-01", "by": "Q", "date": "2024-08-01", "links": [["Instagram", "https://www.instagram.com/whoisthemoonchild"]]},
+ {"n": "Meadesmoore", "t": "steak", "d": "Modern steakhouse · alt cuts", "area": "Telok Ayer · Boon Tat St", "ll": [1.28137, 103.84852], "sub": "21A Boon Tat St · +65 6227 2247", "by": "Q", "date": "2024-08-02", "links": [["Map", "https://goo.gl/maps/YkQaChXHSGPgTx3e9"]]},
+ {"n": "Tong Heng egg tart", "t": "bake", "d": "Egg tart", "area": "Chinatown", "ll": [1.28153, 103.84511], "sub": "285 South Bridge Rd · S058833", "by": "Q", "date": "2024-08-06", "links": []},
+ {"n": "Seng Kee Black Chicken Herbal Soup", "t": "cn", "d": "Herbal soup & zi char (till 4am)", "area": "Eunos · Changi Rd", "ll": [1.31937, 103.91282], "sub": "467 Changi Rd · 6746 4089", "by": "Q", "date": "2024-08-17", "links": [["Map", "https://goo.gl/maps/7SKDyaN2jnmjaDnm6"]]},
+ {"n": "Abundance: Taiwanese & Craft Beer Bar", "t": "tw", "d": "Taiwanese + craft beer", "area": "Jalan Besar", "ll": [1.31357, 103.85976], "sub": "399 Jalan Besar · S209008", "by": "Q", "date": "2024-08-23", "links": [["Map", "https://goo.gl/maps/YCrxeKvVSSfhCdCs8"]]},
+ {"n": "Grand Hyatt tiramisu", "t": "bake", "d": "Tiramisu", "area": "Orchard · Grand Hyatt", "ll": [1.307, 103.8332], "sub": "Grand Hyatt, 10 Scotts Rd", "by": "Q", "date": "2024-08-30", "links": []},
+ {"n": "Fortuna", "t": "it", "d": "Sicilian-Neapolitan trattoria", "area": "Craig Rd · Tanjong Pagar", "ll": [1.27766, 103.84303], "sub": "7 Craig Rd", "by": "Q", "date": "2024-09-13", "links": [["Instagram", "https://www.instagram.com/fortunaitaliantrattoria/"]]},
+ {"n": "Cheeky Beehoon @ The Canteen by Enjoy", "t": "local", "d": "Local zi char · Hokkien mee, crab", "area": "Jalan Besar · Kam Leng", "ll": [1.31322, 103.8597], "sub": "383 Jalan Besar, Kam Leng Hotel", "by": "Q", "date": "2024-09-20", "links": []},
+ {"n": "Allora", "t": "it", "d": "Italian", "area": "Changi Airport · Crowne Plaza", "ll": [1.35872, 103.98797], "sub": "75 Airport Blvd, Crowne Plaza Changi Airport · S819664", "by": "Q", "date": "2025-01-28", "links": [["Instagram", "https://www.instagram.com/allora.changiairport"]]},
+ {"n": "Yakiniku Don-Don 1st", "t": "jp", "d": "Osaka yakiniku", "area": "Tanjong Pagar", "ll": [1.27836, 103.84366], "sub": "90 Tanjong Pagar Rd · +65 6221 0841", "by": "Q", "date": "2024-12-30", "links": [["Map", "https://goo.gl/maps/EJwYtbCDQE2rGJ7J6"]]},
+ {"n": "Coexist Coffee Co.", "t": "cafe", "d": "Coffee @ Lifelong Learning Institute", "area": "Paya Lebar", "ll": [1.3197, 103.89234], "sub": "11 Eunos Rd 8", "by": "Q", "date": "2024-12-30", "links": [["Map", "https://goo.gl/maps/MeiH3ofrgp2da6NJA"]]},
+ {"n": "Fat Belly", "t": "steak", "d": "Casual steakhouse · hanger steak", "area": "Bukit Timah · Serene Centre", "ll": [1.32252, 103.81371], "sub": "10 Jalan Serene, Serene Centre", "by": "Q", "date": "2025-01-06", "links": []},
+ {"n": "Signs A Taste of Vietnam Pho", "t": "vn", "d": "Pho", "area": "Somerset · Orchard Gateway", "ll": [1.30044, 103.83944], "sub": "277 Orchard Rd #B2-15, Orchard Gateway · S238858", "by": "Q", "date": "2025-01-11", "links": [["Map", "https://goo.gl/maps/kifxXGiPN5wp8Bnv9"]]},
+ {"n": "Spring Coffee", "t": "cafe", "d": "Strawberry matcha latte", "area": "Chinatown · Hong Lim", "ll": [1.28439, 103.8461], "sub": "531 Upper Cross St, Hong Lim Complex", "by": "Q", "date": "2025-01-11", "links": []},
+ {"n": "Dearborn", "t": "cafe", "d": "Cafe @ New Bahru", "area": "River Valley · New Bahru", "ll": [1.29219, 103.83929], "sub": "46 Kim Yam Rd, New Bahru", "by": "Q", "date": "2025-01-11", "links": [["Map", "https://goo.gl/maps/S1JyzPLDJtkbsgP1A"]]},
+ {"n": "Lean&Rich", "t": "bake", "d": "Bakery cafe by ex-Tartine Korean baker", "area": "Clemenceau · UE Square", "ll": [1.29216, 103.8427], "sub": "81 Clemenceau Ave, UE Square", "by": "Q", "date": "2025-02-07", "links": [["Reel", "https://www.instagram.com/reel/DE6lsq1SedS/"]]},
+ {"n": "Petite Krumbs", "t": "bake", "d": "French pastries at hawker prices", "area": "Telok Ayer · Amoy St FC", "ll": [1.27934, 103.84665], "sub": "Amoy St Food Centre #02-133", "by": "Q", "date": "2025-02-11", "links": [["Reel", "https://www.instagram.com/reel/DEyn1D2SCyG/"]]},
+ {"n": "Tora-san", "t": "jp", "d": "Japanese @ Centrepoint", "area": "Somerset · Centrepoint", "ll": [1.30193, 103.83956], "sub": "176 Orchard Rd #03-44, The Centrepoint · S238843", "by": "Q", "date": "2025-02-12", "links": []},
+ {"n": "Hae! Prawn Claypot", "t": "local", "d": "Prawn claypot", "area": "Bedok", "ll": [1.3357, 103.95008], "sub": "3014 Bedok Industrial Park E #01-2152 · S489980", "by": "Q", "date": "2025-02-13", "links": [["Map", "https://goo.gl/maps/1XzMTW3jEGCgP9XTA"]]},
+ {"n": "thatsmypizza", "t": "it", "d": "Pizza", "area": "Bukit Timah", "ll": [1.34079, 103.77521], "sub": "2A Jalan Seh Chuan #01-071, Bukit Timah Wet Market · S599213", "by": "Q", "date": "2025-02-22", "links": [["Map", "https://maps.app.goo.gl/yytvxeoEfU5JBVP48"]]},
+ {"n": "Keen's Bagelry", "t": "bake", "d": "Bagels", "area": "Marina View / CBD", "ll": [1.27823, 103.85081], "sub": "12 Marina View #02-19/20, Asia Square Tower 2 · S018961", "by": "Q", "date": "2025-02-22", "links": []},
+ {"n": "Average Service", "t": "cafe", "d": "Brunch", "area": "Jalan Besar / Farrer Park", "ll": [1.30517, 103.8553], "sub": "315 Jalan Besar · Farrer Park", "by": "K", "date": "2025-02-23", "links": []},
+ {"n": "HUE Restaurant", "t": "th", "d": "Modern Thai (mum's pick)", "area": "Jalan Besar · Tyrwhitt Rd", "ll": [1.31124, 103.85973], "sub": "123 Tyrwhitt Rd · +65 9018 0992", "by": "Q", "date": "2025-03-05", "links": [["Map", "https://goo.gl/maps/SQzWHqBQsibMmDyW6"]]},
+ {"n": "174BINGO", "t": "cafe", "d": "Bakery cafe · pistachio tart", "area": "Joo Chiat", "ll": [1.31265, 103.89983], "sub": "174 Joo Chiat Rd", "by": "Q", "date": "2025-03-08", "links": [["Map", "https://goo.gl/maps/MNCyhvrZBsGK9qp79"]]},
+ {"n": "Fu Ming Carrot Cake", "t": "local", "d": "Michelin Bib black carrot cake", "area": "Redhill", "ll": [1.28731, 103.81831], "sub": "Blk 85 Redhill Lane Food Centre", "by": "Q", "date": "2025-03-28", "links": [["TikTok", "https://vt.tiktok.com/ZSrFkVH8s"]]},
+ {"n": "Keng Eng Kee Seafood", "t": "local", "d": "Zi char / seafood", "area": "Bukit Merah / Alexandra", "ll": [1.28582, 103.80353], "sub": "124 Bukit Merah Lane 1", "by": "Q", "date": "2025-03-31", "links": []},
+ {"n": "Queic SG", "t": "bake", "d": "Basque cheesecake specialty", "area": "Chinatown · Kreta Ayer", "ll": [1.28088, 103.84204], "sub": "41 Kreta Ayer Rd (flagship)", "by": "Q", "date": "2025-03-31", "links": []}
+];
+const NONFOOD = [];
+const RECENT=[["Last 7 days",7],["Last 30 days",30],["Last 90 days",90],["Last 6 months",180]];
+let userLoc=null, activeTypes=new Set(), activeAreas=new Set(), activeRecent=null;
+function ageDays(f){return (Date.now()-new Date(f.date).getTime())/86400000;}
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function haversine(a,b){const R=6371,dLat=(b[0]-a[0])*Math.PI/180,dLng=(b[1]-a[1])*Math.PI/180;const s=Math.sin(dLat/2)**2+Math.cos(a[0]*Math.PI/180)*Math.cos(b[0]*Math.PI/180)*Math.sin(dLng/2)**2;return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s));}
+function distOf(f){if(!userLoc||!f.ll)return null;return haversine(userLoc,f.ll);}
+function filteredFood(){return FOOD.filter(f=>{if(activeTypes.size&&!activeTypes.has(f.t))return false;if(activeAreas.size){const k=f.area||"__none__";if(!activeAreas.has(k))return false;}if(activeRecent&&ageDays(f)>activeRecent)return false;return true;});}
+function sortList(list,sort){list.sort((a,b)=>{if(sort==='dist'){const da=distOf(a),db=distOf(b);if(da==null&&db==null)return a.n.localeCompare(b.n);if(da==null)return 1;if(db==null)return -1;return da-db;}if(sort==='type')return TYPES[a.t].localeCompare(TYPES[b.t])||a.n.localeCompare(b.n);if(sort==='area')return (a.area||'~').localeCompare(b.area||'~')||a.n.localeCompare(b.n);if(sort==='date')return b.date.localeCompare(a.date);return a.n.localeCompare(b.n);});return list;}
+function cardHTML(f,hi){
+  const d=distOf(f);let distHTML='';
+  if(userLoc){distHTML=d!=null?'<div class="dist">~ '+d.toFixed(d<10?1:0)+' km away</div>':'<div class="dist tbc">location not in chat</div>';}
+  const loc=f.area?'<span class="loc">'+f.area+'</span>':'<span>location TBC - open map/link</span>';
+  const sub=f.sub?'<span>'+f.sub+'</span>':'';
+  const links=f.links&&f.links.length?'<div class="links">'+f.links.map(l=>'<a class="lk" href="'+l[1]+'" target="_blank" rel="noopener">'+l[0]+'</a>').join('')+'</div>':'';
+  return '<div class="item'+(hi?' hi':'')+'"><div class="tags"><span class="tag '+TCLASS[f.t]+'">'+TYPES[f.t]+'</span></div><h3>'+f.n+'</h3>'+(f.d?'<div class="note">'+f.d+'</div>':'')+'<div class="meta">'+loc+sub+'</div>'+distHTML+links+'<span class="by">added by '+f.by+'</span></div>';
+}
+function render(){
+  const sort=document.getElementById('sortSel').value;
+  let list=sortList(filteredFood(),sort);
+  document.getElementById('grid').innerHTML=list.length?list.map(f=>cardHTML(f,false)).join(''):'<div class="empty">No spots match these filters.</div>';
+  document.getElementById('count').innerHTML='<b>'+list.length+'</b> food spot'+(list.length!==1?'s':'')+' shown'+(userLoc?' - sorted by distance':'');
+}
+function renderNonFood(){
+  document.getElementById('gridNF').innerHTML=NONFOOD.map(x=>{const links=x.links.length?'<div class="links">'+x.links.map(l=>'<a class="lk" href="'+l[1]+'" target="_blank" rel="noopener">'+l[0]+'</a>').join('')+'</div>':'';return '<div class="item"><div class="tags"><span class="tag t-na">'+x.cat+'</span></div><h3>'+x.n+'</h3>'+links+'<span class="by">added by '+x.by+'</span></div>';}).join('');
+}
+function buildChips(){
+  const tc=document.getElementById('typeChips');const counts={};FOOD.forEach(f=>counts[f.t]=(counts[f.t]||0)+1);
+  tc.innerHTML=Object.keys(TYPES).filter(k=>counts[k]).sort((a,b)=>counts[b]-counts[a]).map(k=>'<span class="chip" data-type="'+k+'">'+TYPES[k]+' <span style="opacity:.6">'+counts[k]+'</span></span>').join('');
+  tc.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const k=c.dataset.type;if(activeTypes.has(k)){activeTypes.delete(k);c.classList.remove('on');}else{activeTypes.add(k);c.classList.add('on');}render();});
+  const ac=document.getElementById('areaChips');const acount={};FOOD.forEach(f=>{const k=f.area||"__none__";acount[k]=(acount[k]||0)+1;});
+  const keys=Object.keys(acount).filter(k=>k!=="__none__").sort();
+  let html=keys.map(k=>'<span class="chip" data-area="'+k+'">'+k+' <span style="opacity:.6">'+acount[k]+'</span></span>').join('');
+  if(acount["__none__"])html+='<span class="chip" data-area="__none__">Location TBC <span style="opacity:.6">'+acount["__none__"]+'</span></span>';
+  ac.innerHTML=html;
+  ac.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const k=c.dataset.area;if(activeAreas.has(k)){activeAreas.delete(k);c.classList.remove('on');}else{activeAreas.add(k);c.classList.add('on');}render();});
+  const rc=document.getElementById('recentChips');
+  rc.innerHTML=RECENT.map(r=>{const n=FOOD.filter(f=>ageDays(f)<=r[1]).length;return '<span class="chip" data-recent="'+r[1]+'">'+r[0]+' <span style="opacity:.6">'+n+'</span></span>';}).join('');
+  rc.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{const v=+c.dataset.recent;if(activeRecent===v){activeRecent=null;c.classList.remove('on');}else{activeRecent=v;rc.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');document.getElementById('sortSel').value='date';}render();});
+}
+function setupCollapse(){
+  document.querySelectorAll('.phead').forEach(h=>{
+    const id=h.dataset.target, body=document.getElementById(id), key='col_'+id;
+    if(lsGet(key)==='1'){body.classList.add('collapsed');h.classList.add('col');}
+    h.onclick=()=>{const c=body.classList.toggle('collapsed');h.classList.toggle('col',c);lsSet(key,c?'1':'0');};
+  });
+}
+function surprise(){
+  const list=filteredFood();const box=document.getElementById('randomBox');box.style.display='block';
+  if(!list.length){box.innerHTML='<div class="empty">No spots to pick from - loosen the filters.</div>';return;}
+  const pick=list[Math.floor(Math.random()*list.length)];
+  box.innerHTML='<div class="rb-head">&#127922; Your pick</div>'+cardHTML(pick,true)+'<div class="rb-actions"><button class="dice" id="spinAgain">&#127922; Spin again</button><button class="clr" id="spinClear">Clear</button></div>';
+  document.getElementById('spinAgain').onclick=surprise;
+  document.getElementById('spinClear').onclick=()=>{box.style.display='none';};
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+async function findNearest(){
+  const raw=document.getElementById('postal').value.trim();const st=document.getElementById('status');
+  if(!/^\d{5,6}$/.test(raw)){st.innerHTML='Please enter a 6-digit Singapore postal code.';return;}
+  st.innerHTML='Looking up postal code...';
+  try{
+    const r=await fetch('https://www.onemap.gov.sg/api/common/elastic/search?searchVal='+raw+'&returnGeom=Y&getAddrDetails=Y&pageNum=1');
+    const j=await r.json();
+    if(!j.results||!j.results.length){st.innerHTML='Could not find that postal code.';return;}
+    const h=j.results[0];userLoc=[parseFloat(h.LATITUDE),parseFloat(h.LONGITUDE)];
+    document.getElementById('sortSel').value='dist';
+    st.innerHTML='Showing spots nearest to <b>'+((h.ADDRESS||'').replace(/SINGAPORE\s*\d+/,'').trim()||raw)+'</b> - closest first.';
+    render();
+  }catch(e){st.innerHTML='Network blocked the geocoder; filters still work.';}
+}
+function resetLoc(){userLoc=null;document.getElementById('postal').value='';document.getElementById('status').innerHTML='';document.getElementById('sortSel').value='name';render();}
+document.getElementById('goBtn').onclick=findNearest;
+document.getElementById('clrBtn').onclick=resetLoc;
+document.getElementById('surpriseBtn').onclick=surprise;
+document.getElementById('postal').addEventListener('keydown',e=>{if(e.key==='Enter')findNearest();});
+document.getElementById('sortSel').onchange=render;
+const known=FOOD.filter(f=>f.ll).length;
+document.getElementById('foot').innerHTML='<b>How to use:</b> type a postal code to rank by distance, tap the cuisine / area headers to collapse them, or hit Surprise me for a random pick. '+FOOD.length+' food spots, each pinned to a real address. New places posted in the Telegram group are added automatically (only ones with a findable location).';
+buildChips();setupCollapse();renderNonFood();render();
+</script>
+</body>
+</html>
